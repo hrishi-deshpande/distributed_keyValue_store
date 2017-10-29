@@ -1,1 +1,2 @@
-# distributed_keyValue_store
+#Project Title
+Distributed Key Value Store for DSPM (Distributed Shared Persistent Memory)
