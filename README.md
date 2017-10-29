@@ -1,2 +1,8 @@
-#Project Title
-Distributed Key Value Store for DSPM (Distributed Shared Persistent Memory)
+# Distributed Key Value Store
+Key-value store is a widely-used and important type of storage in datacenters. Many datacenter applications can express their data in the form of keys and values and store them in a key-value storage system. There have been quite a few key-value storage systems proposed and built in recent years. Performance and reliability of key-value storage systems continue to be the two factors that researchers and engineers seek to improve.
+
+Persistent memory (aka next-generation non-volatile memory) is a new type of hardware memory technology that adds persistence to main memory and thus can maintain persistent data even when there’s power failure. Persistent memory (PM) provides memory-like interface (byte-addressable through memory loads and stores) and performance and is much faster and more expensive than traditional storage devices. One way to use PMs in datacenters is to organize them into a distributed, shared pool. My lab has built such a system that lets users perform native memory load and store accesses to the global PM space while being able to make the data persistent in PM. 
+
+The goal of this project is to build a simple key-value store system on top of the distributed shared PM system. It can be as simple as a hash table (that maps keys to values) to complex systems that support transactions and strong consistency. A major challenge in designing and building such a key-value store system is to minimize the performance overhead caused by software (because the hardware PM is very fast and any software overhead will dominate). 
+
+For more information on DSPM refer to this paper: https://engineering.purdue.edu/WukLab/hotpot-socc17.pdf). 
