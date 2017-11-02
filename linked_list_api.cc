@@ -1,32 +1,45 @@
 #include "linked_list_api.h"
-
-using namespace std;
+#include "genericApi.h"
+#include <stdlib.h>
+#include <string.h>
 
 Node* newnode(Key key, Value value) {
-	Node *node = (Node *)malloc(sizeof(Node));
+	size_t malloc_size = sizeof(Node) + sizeof(Key);
+	if (kType == STRING) {
+		malloc_size += sizeof(key);
+	}
+	malloc_size += sizeof(value);
+
+	Node *node = (Node *)malloc(malloc_size);
+	if (node == NULL) return NULL;
+
+	size_t runningSize = sizeof(Node);
+
 	if (kType == INT) {
 		node->key.intKey = key.intKey;
 	} else {
-		node->key.strKey = key.strKey;
+		node->key.strKey = (char*)(node + runningSize);
+		runningSize += sizeof(key.strKey);
+		strcpy(node->key.strKey, key.strKey);
 	}
-	node->value = value;
-	node->prev = node->next = NULL;
+	node->value = (char*)(node + runningSize);
+	strcpy(node->value, value);
+	node->next = NULL;
 }
 
-void insert(Node **head, Key key, Value value) {
+void insert(Node *head, Key key, Value value) {
 	Node *node = newnode(key, value);
 
-	if (*head != NULL) {
-		node->next = (*head)->next;
-		(*head)->next = node;
-	}
-	*head = node;
+	if (node == NULL) die("OOM");
+
+	node->next = head->next;
+	head->next = node;
 }
 
 Node* findUtil(Node *head, Key key, Node **prevNode) {
 	if (head == NULL) return head;
 
-	Node *prev = NULL, *temp = head;
+	Node *prev = head, *temp = head->next;
 	while (temp != NULL) {
 		if (kType == INT) {
 			if (temp->key.intKey == key.intKey) {
@@ -34,7 +47,7 @@ Node* findUtil(Node *head, Key key, Node **prevNode) {
 				return temp;
 			}
 		} else if (kType == STRING) {
-			if (temp->key.strKey.compare(key.strKey) == 0) {
+			if (strcmp(temp->key.strKey, key.strKey) == 0) {
 				*prevNode = prev;
 				return temp;
 			}
@@ -53,18 +66,14 @@ bool find(Node *head, Key key) {
 	return temp?true:false;
 }
 
-bool findAndRemove(Node **head, Key key) {
+bool findAndRemove(Node *head, Key key) {
 	Node *prev = NULL;
-	Node *temp = findUtil(*head, key, &prev);
+	Node *temp = findUtil(head, key, &prev);
 
 	if (!temp) return false;
 
-	if (temp == *head) {
-		*head = (*head)->next;
-	} else {
-		prev->next = temp->next;
-	}
+	prev->next = temp->next;
 
 	free(temp);
 	return true;
-}	
+}

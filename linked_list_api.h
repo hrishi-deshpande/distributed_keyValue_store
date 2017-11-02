@@ -1,10 +1,8 @@
-#include <string>
+typedef char* Value;
 
-typedef std::string Value;
-
-typdef union {
-	int Intkey;
-	string strKey;
+typedef union {
+	int intKey;
+	char* strKey;
 }Key;
 
 typedef enum {
@@ -23,6 +21,6 @@ typedef struct node Node;
 
 extern KeyType kType;
 
-void insert(Node **head, Key key, Value value);
+void insert(Node *head, Key key, Value value);
 bool find(Node *head, Key key);
-bool findAndRemove(Node **head, Key key);
+bool findAndRemove(Node *head, Key key);
