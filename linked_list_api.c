@@ -2,6 +2,8 @@
 #include "genericApi.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include "keyValueStore.h"
 
 Node* newnode(Key key, Value value) {
 	size_t malloc_size = sizeof(Node) + sizeof(Key);
@@ -58,22 +60,37 @@ Node* findUtil(Node *head, Key key, Node **prevNode) {
 	return NULL;
 }
 
-bool find(Node *head, Key key) {
+_Bool find(Node *head, Key key) {
 	Node *prev = NULL;
-
 	Node *temp = findUtil(head, key, &prev);
-
 	return temp?true:false;
 }
 
-bool findAndRemove(Node *head, Key key) {
+Node* findAndReturn(Node *head, Key key) {
+	Node *prev = NULL;
+	return findUtil(head, key, &prev);
+}
+
+_Bool findAndRemove(Node *head, Key key) {
 	Node *prev = NULL;
 	Node *temp = findUtil(head, key, &prev);
-
-	if (!temp) return false;
+	
+	if (!temp) return true;
 
 	prev->next = temp->next;
-
 	free(temp);
-	return true;
+	return false;
+}
+
+void printList(Node *head) {
+	Node *temp = head->next;
+
+	while (temp != NULL) {
+		if (kType == INT) {
+			printf("%d", temp->key.intKey);
+		} else {
+			printf("%s", temp->key.strKey);
+		}
+		printf(" %s", temp->value);
+	}
 }

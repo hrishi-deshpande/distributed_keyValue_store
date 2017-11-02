@@ -1,3 +1,6 @@
+#ifndef LINKED_LIST_API_H
+#define LINKED_LIST_API_H
+#include <stdbool.h>
 typedef char* Value;
 
 typedef union {
@@ -10,11 +13,10 @@ typedef enum {
 	STRING = 2	
 }KeyType;
 
-
 struct node {
 	Key key;
 	Value value;
-	struct node *prev, *next;
+	struct node *next;
 };
 
 typedef struct node Node;
@@ -22,5 +24,8 @@ typedef struct node Node;
 extern KeyType kType;
 
 void insert(Node *head, Key key, Value value);
-bool find(Node *head, Key key);
-bool findAndRemove(Node *head, Key key);
+_Bool find(Node *head, Key key);
+_Bool findAndRemove(Node *head, Key key);
+Node* findAndReturn(Node *head, Key key);
+void printList(Node *head);
+#endif

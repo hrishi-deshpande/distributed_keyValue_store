@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <sys/mman.h>
+#include "keyValueStore.h"
 
 #include "dsnvm.h"
 #include "../Hotpot/hotpot/dsnvm-helper.h"
@@ -23,7 +24,8 @@
 #define MAX_NR_RETRY 100
 #define TABLE_SIZE 67
 
-
+Node hashTable[TABLE_SIZE];
+KeyType kType;
 void die(const char* fmt, ...) {
 	va_list args;
 
@@ -77,10 +79,10 @@ static void init_xact() {
 	
 	xact_struct = malloc(malloc_size);
 	if (xact_struct == NULL) die("OOM");
-	xact_header = xact_struct;
+	xact_header = (struct dsnvm_xact_header*)xact_struct;
 	xact_header->rep_degree = NR_REPLICA;
 	xact_header->xact_id = -1;
-	xact_areas = xact_struct + sizeof(struct dsnvm_xact_header);
+	xact_areas = (struct dsnvm_addr_len*)((char*)xact_struct + sizeof(struct dsnvm_xact_header));
 }
 
 static void init_xact_area() {
@@ -125,10 +127,10 @@ int main(int argc, char **argv) {
 	init_xact();
 	init_xact_area();
 
-	element_count = virt_dsnvm;
+	element_count = (int*)virt_dsnvm;
 
 	printf("Element count: %d\n", *element_count);
-	arr = virt_dsnvm + sizeof(int);
+	arr = (int*)((char*)virt_dsnvm + sizeof(int));
 	
 	int choice = 0, item  = 0, i = 0;
 	while (1) {

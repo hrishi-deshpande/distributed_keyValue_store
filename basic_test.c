@@ -50,7 +50,7 @@ static void open_and_mmap_files() {
 
 	printf("\nNo of array elements allowed: %d\n", NUM_ELEMENTS);
 	//Open a dsnvm file
-	fd_dsnvm = open("/mnt/hotpot/test", O_RDWR|O_CREAT);
+	fd_dsnvm = open("/mnt/hotpot/btest", O_RDWR|O_CREAT);
 	if (fd_dsnvm < 0) {
 		die("Cannot open file (1):%s", strerror(fd_dsnvm));
 	}
