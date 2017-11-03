@@ -1,8 +1,12 @@
 #ifndef KEYVALUESTORE_H
 #define KEYVALUESTORE_H
+#include <stdlib.h>
 
 #define TABLE_SIZE 67
-#include "linked_list_api.h"
+#define MAX_VALUE_SIZE 256
 
-extern Node hashTable[TABLE_SIZE];
+#include "linked_list_api.h"
+extern void* curAddr;
+extern void* maxAddr;
+extern Node *hashTable[TABLE_SIZE];
 #endif

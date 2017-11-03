@@ -38,6 +38,7 @@ static void open_and_mmap_files() {
 	printf("NR Pages: %d\nNR Regions: %d\nmmap_len: %lu \n", NR_PAGES, NR_REGIONS, mmap_len);
 
 	//Open a dsnvm file
+	unlink("/mnt/hotpot/keyValueStore");
 	fd_dsnvm = open("/mnt/hotpot/keyValueStore", O_RDWR|O_CREAT);
 	if (fd_dsnvm < 0) {
 		die("Cannot open file (1):%s", strerror(fd_dsnvm));
@@ -100,17 +101,6 @@ static void append_xact_commit_area(Node *node) {
 		commit_xact();
 	}
 }
-/*static void init_xact_area() {
-	int i = 0;
-	unsigned long base;
-
-	base = (unsigned long)virt_dsnvm;
-	
-	for (i = 0; i < NR_XACT_AREAS; i++) {
-		xact_areas[i].addr = base + i*XACT_AREA_SIZE;
-		xact_areas[i].len = XACT_AREA_SIZE;
-	}
-}*/
 
 static void close_files() {
 	if (fd_dsnvm > 0) close(fd_dsnvm);
