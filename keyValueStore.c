@@ -147,15 +147,22 @@ int main(int argc, char **argv) {
 			case 1: printf("\nInput item key:\n");
 				if (kType == INT) {
 				    scanf("%d", &intKey);
-				    key.intKey = intKey;				   	    } else {
+				    key.intKey = intKey;				   	    		} else {
 				    scanf("%s", strKey);
+			 	    key.strKey = strKey;
 				}
-				key.strKey = strKey;
 				printf("\nInput item value:");
 				scanf("%s", value);
 				putItem(key, value);
 				break; 
-			case 2:	break;
+			case 2: if (kType == INT) {
+                                    scanf("%d", &intKey);
+                                    key.intKey = intKey;                        				} else {
+                                    scanf("%s", strKey);
+                                    key.strKey = strKey;
+                                }
+			 	Value v = getItem(key);	
+				break;
 			case 3: scan();
 				break;
 			case 4: break;
