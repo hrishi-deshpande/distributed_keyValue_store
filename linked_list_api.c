@@ -1,6 +1,6 @@
 #include "linked_list_api.h"
 #include "genericApi.h"
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "keyValueStore.h"
@@ -10,30 +10,35 @@ Node* newnode(Key key, Value value) {
 	if (kType == STRING) {
 		malloc_size += sizeof(key);
 	}
-	malloc_size += sizeof(value);
+	malloc_size += MAX_VALUE_SIZE;
 
-	Node *node = (Node *)malloc(malloc_size);
+	if ((size_t)curAddr + malloc_size > (size_t)maxAddr) {
+		die("OOM");
+	} 
+
+	Node *node = (Node *)curAddr;
 	if (node == NULL) return NULL;
-
-	size_t runningSize = sizeof(Node);
+	
+	unsigned int runningSize = sizeof(Node);
 
 	if (kType == INT) {
 		node->key.intKey = key.intKey;
 	} else {
-		node->key.strKey = (char*)(node + runningSize);
+		node->key.strKey = (char*)((char*)node + runningSize);
 		runningSize += sizeof(key.strKey);
 		strcpy(node->key.strKey, key.strKey);
 	}
-	node->value = (char*)(node + runningSize);
+	node->value = (char*)((char *)node + runningSize);
+	node->totSize = runningSize;
 	strcpy(node->value, value);
 	node->next = NULL;
+	curAddr = curAddr + malloc_size;
 }
 
 void insert(Node *head, Key key, Value value) {
 	Node *node = newnode(key, value);
 
 	if (node == NULL) die("OOM");
-
 	node->next = head->next;
 	head->next = node;
 }

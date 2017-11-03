@@ -1,11 +1,12 @@
 #ifndef LINKED_LIST_API_H
 #define LINKED_LIST_API_H
+#include <stdlib.h>
 #include <stdbool.h>
 typedef char* Value;
 
 typedef union {
 	int intKey;
-	char* strKey;
+	char *strKey;
 }Key;
 
 typedef enum {
@@ -14,6 +15,7 @@ typedef enum {
 }KeyType;
 
 struct node {
+	unsigned int totSize;
 	Key key;
 	Value value;
 	struct node *next;

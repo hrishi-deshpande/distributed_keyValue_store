@@ -11,4 +11,5 @@ Value getItem(Key key);
 void putItem(Key key, Value v);
 _Bool removeItem(Key key); 
 void scan();
+Node* updateItem(Key key, Value newValue);
 #endif
