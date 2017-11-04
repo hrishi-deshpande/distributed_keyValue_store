@@ -1,6 +1,5 @@
 #include "linked_list_api.h"
 #include "genericApi.h"
-//#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "keyValueStore.h"
@@ -25,14 +24,17 @@ Node* newnode(Key key, Value value) {
 		node->key.intKey = key.intKey;
 	} else {
 		node->key.strKey = (char*)((char*)node + runningSize);
-		runningSize += sizeof(key.strKey);
+		runningSize += sizeof(key.strKey);;
 		strcpy(node->key.strKey, key.strKey);
 	}
 	node->value = (char*)((char *)node + runningSize);
-	node->totSize = runningSize;
+	bzero(node->value, MAX_VALUE_SIZE);
 	strcpy(node->value, value);
+
+	node->totSize = runningSize;
 	node->next = NULL;
 	curAddr = curAddr + malloc_size;
+	return node;
 }
 
 void insert(Node *head, Key key, Value value) {
@@ -73,7 +75,8 @@ _Bool find(Node *head, Key key) {
 
 Node* findAndReturn(Node *head, Key key) {
 	Node *prev = NULL;
-	return findUtil(head, key, &prev);
+	Node *temp = findUtil(head, key, &prev);
+	return temp;
 }
 
 _Bool findAndRemove(Node *head, Key key) {
@@ -97,5 +100,7 @@ void printList(Node *head) {
 			printf("%s", temp->key.strKey);
 		}
 		printf(" %s", temp->value);
+		temp = temp->next;
+		printf("\n");
 	}
 }

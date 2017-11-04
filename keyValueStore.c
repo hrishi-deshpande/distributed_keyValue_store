@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include "keyValueStore.h"
+#include "keyValueApi.h"
 
 #include "dsnvm.h"
 #include "../Hotpot/hotpot/dsnvm-helper.h"
@@ -38,7 +39,7 @@ static void open_and_mmap_files() {
 	printf("NR Pages: %d\nNR Regions: %d\nmmap_len: %lu \n", NR_PAGES, NR_REGIONS, mmap_len);
 
 	//Open a dsnvm file
-	unlink("/mnt/hotpot/keyValueStore");
+//	unlink("/mnt/hotpot/keyValueStore");
 	fd_dsnvm = open("/mnt/hotpot/keyValueStore", O_RDWR|O_CREAT);
 	if (fd_dsnvm < 0) {
 		die("Cannot open file (1):%s", strerror(fd_dsnvm));
@@ -110,8 +111,15 @@ static void createOrLoadStore() {
 	int i = 0;
 	for (i = 0; i < TABLE_SIZE; i++) {
 		hashTable[i] = (Node*)curAddr;
+		(hashTable[i])->next = NULL;
 		curAddr += sizeof(Node);
 	}
+}
+
+void getItemUtil(Key key) {
+	Value v = (Value)(intptr_t)getItem(key);
+	if (v != NULL) printf("Corresponding value: %s\n", v);
+	else printf("Key not found\n");
 }
 
 int main(int argc, char **argv) {
@@ -130,11 +138,13 @@ int main(int argc, char **argv) {
 	char strKey[256] = {'\0'};
 	int intKey = -1;
 	Key key;
+	char* v = NULL;
+	Node* updateNode = NULL;
 	while (1) {
 		printf("\n1.Add item \n2.Get Item \n3.Scan \n4.Update Item \n5.Exit\nEnter your choice:");
 		scanf("\n%d", &choice);
 		switch (choice) {
-			case 1: printf("\nInput item key:\n");
+			case 1: printf("\nInput item key:");
 				if (kType == INT) {
 				    scanf("%d", &intKey);
 				    key.intKey = intKey;				   	    		} else {
@@ -145,17 +155,28 @@ int main(int argc, char **argv) {
 				scanf("%s", value);
 				putItem(key, value);
 				break; 
-			case 2: if (kType == INT) {
+			case 2: printf("\nEnter the key to search:");
+				if (kType == INT) {
                                     scanf("%d", &intKey);
                                     key.intKey = intKey;                        				} else {
                                     scanf("%s", strKey);
                                     key.strKey = strKey;
                                 }
-			 	Value v = getItem(key);	
-				break;
+				getItemUtil(key);
+			 	break;
 			case 3: scan();
 				break;
-			case 4: break;
+			case 4: printf("\nEnter the key to update:");
+				if (kType == INT) {
+                                    scanf("%d", &intKey);
+                                    key.intKey = intKey;                        				} else {
+                                    scanf("%s", strKey);
+                                    key.strKey = strKey;
+                                }
+				printf("\nInput new value:");
+				scanf("%s", value);
+				updateNode = (Node*)(intptr_t)updateItem(key, value);
+				break;
 			case 5: die("exiting");
 			default: printf("\nInvalid choice!! please reenter!\n");
 		}

@@ -6,8 +6,8 @@
 void createStore(KeyType ktype);
 void deleteStore(int fd);
 
-_Bool containsItem(Key key);
 Value getItem(Key key);
+_Bool containsItem(Key key);
 void putItem(Key key, Value v);
 _Bool removeItem(Key key); 
 void scan();

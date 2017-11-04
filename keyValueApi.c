@@ -1,7 +1,7 @@
 #include "keyValueApi.h"
 #include "keyValueStore.h"
-#include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 int hashIndex(Key key) {
 	int num = (kType==INT)?key.intKey:sizeof(key.strKey);
@@ -14,7 +14,8 @@ Value getItem(Key key) {
 	
 	Node *head = hashTable[idx];
 	Node* temp = findAndReturn(head, key);
-	return temp!=NULL?temp->value:NULL;
+	Value v = NULL;
+	return (temp!=NULL)?temp->value: NULL;
 }
 
 _Bool containsItem(Key key) {
@@ -26,6 +27,13 @@ void putItem(Key key, Value value) {
 	int idx = hashIndex(key);
 
 	Node *head = hashTable[idx];
+	Node* oldNode = findAndReturn(head, key);
+
+	if (oldNode != NULL) {
+		strcpy(oldNode->value, value);
+		return;
+	}
+
 	insert(head, key, value);	
 }
 
@@ -49,10 +57,6 @@ Node* updateItem(Key key, Value newValue) {
 	if (temp == NULL) return NULL;
 
 	size_t oldSize = sizeof(temp->value), newSize = sizeof(newValue);
-	if (oldSize > newSize) {
-		strcpy(temp->value, newValue);
-	} else {
-		strcpy(temp->value, newValue);		
-	}
+	strcpy(temp->value, newValue);
 	return temp;
 }
